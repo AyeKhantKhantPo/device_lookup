@@ -1,0 +1,81 @@
+[tool.poetry]
+name = "cpe-lookup"
+version = "1.2.0"
+description = ""
+authors = ["Aye Khant Khant Po"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+fastapi = "^0.68.1"
+uvicorn = "^0.15.0"
+structlog = "^21.1.0"
+python-dotenv = "^0.19.0"
+httpx = "^0.19.0"
+starlette-context = "^0.3.3"
+netaddr = "^0.8.0"
+rfc3339 = "^6.2"
+redis = "^4.4.0"
+pydantic = "1.10.2"
+
+[tool.poetry.dev-dependencies]
+devtools = {extras = ["pygments"], version = "^0.7.0"}
+black = "^22.6.0"
+isort = "^5.9.3"
+flake8 = "^3.9.2"
+pytest-cov = "^2.12.1"
+pytest-asyncio = "^0.15.1"
+portpicker = "^1.4.0"
+pyproject-flake8 = "^0.0.1-alpha.2"
+poetry2setup = "^1.0.0"
+colorama = "^0.4.4"
+respx = "^0.17.1"
+PyYAML = "^5.4.1"
+pytest = "^6.2.5"
+pre-commit = "^2.16.0"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--cov --cov-report term-missing"
+testpaths = ["tests"]
+junit_suite_name = "cpe_lookup"
+
+[tool.coverage.run]
+source = ["cpe_lookup"]
+omit = []
+
+[tool.coverage.report]
+show_missing = true
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+]
+
+[tool.black]
+line-length = 88
+target-version = ["py38"]
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+line_length = 88
+
+[tool.flake8]
+max-line-length = 88
+max-complexity = 18
+ignore = "E203, E266, E501, E503"
+select = "B, C, E, F, W, T4"
+
+[tool.pyright]
+pythonVersion = "3.8"
+pythonPlatform = "Linux"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,897 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "cpe_lookup",
+        "version": "1.2.0"
+    },
+    "paths": {
+        "/server_info": {
+            "get": {
+                "tags": [
+                    "internal-routes"
+                ],
+                "summary": "Server Info",
+                "operationId": "server_info_server_info_get",
+                "responses": {
+                    "200": {
+                        "description": "Application name and version",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "cpe_lookup/0.1.0"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/healthcheck": {
+            "get": {
+                "tags": [
+                    "internal-routes"
+                ],
+                "summary": "Healthcheck",
+                "operationId": "healthcheck_healthcheck_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/cpes/{cid}/subscriptions/internet": {
+            "get": {
+                "tags": [
+                    "subscription-info"
+                ],
+                "summary": "Get CPE Plan and Installation Type",
+                "operationId": "cpe_subscription_cpes__cid__subscriptions_internet_get",
+                "parameters": [
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Cid"
+                        },
+                        "name": "cid",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Service subscription associated with the CPE and type of installation provided.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SubscriptionInfo"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/cpes/{cid}/status": {
+            "get": {
+                "tags": [
+                    "cpe-info"
+                ],
+                "summary": "Get device status for both indoor and outdoor CPEs",
+                "description": "Get CPE technical information and online status.",
+                "operationId": "get_cpe_status_cpes__cid__status_get",
+                "parameters": [
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Cid",
+                            "type": "string"
+                        },
+                        "name": "cid",
+                        "in": "path"
+                    },
+                    {
+                        "required": false,
+                        "schema": {
+                            "title": "Check Realtime",
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "name": "check_realtime",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "CPE device information and online status",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CPEStatus"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "CPE not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIExceptionModel"
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "Service or upstream unavailable temporarily",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIExceptionModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/customers/{customerid}/subscription": {
+            "get": {
+                "tags": [
+                    "customer_subscription-info"
+                ],
+                "summary": "Get cpe id and subscription status",
+                "operationId": "customer_subscription_info_customers__customerid__subscription_get",
+                "parameters": [
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Customerid",
+                            "type": "string"
+                        },
+                        "name": "customerid",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "CPE ID and subscription status",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CustomerSubscriptionInfo"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/uplink/wireless/{bssid}/status": {
+            "get": {
+                "tags": [
+                    "ap-info"
+                ],
+                "summary": "Get wireless uplink AP status for both Ruckus and Frontiir AP",
+                "description": "Get AP technical information and online status.",
+                "operationId": "get_ap_status_uplink_wireless__bssid__status_get",
+                "parameters": [
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Bssid"
+                        },
+                        "name": "bssid",
+                        "in": "path"
+                    },
+                    {
+                        "required": false,
+                        "schema": {
+                            "title": "Check Realtime",
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "name": "check_realtime",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "AP device information and online status",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AP"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "AP not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIExceptionModel"
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "Service or upstream unavailable temporarily",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIExceptionModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/uplink/fiber/{cid}/status": {
+            "get": {
+                "tags": [
+                    "fiber-uplink-info"
+                ],
+                "summary": "Get fiber uplink info",
+                "operationId": "fiber_uplink_uplink_fiber__cid__status_get",
+                "parameters": [
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Cid"
+                        },
+                        "name": "cid",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Uplink ONU and OLT informations associated with the CPE are provided.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FiberInfo"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tickets/cpe/{cid}/tktinfo": {
+            "get": {
+                "tags": [
+                    "ticket-info"
+                ],
+                "summary": "Get TKT info of CPE",
+                "operationId": "ticketinfo_tickets_cpe__cid__tktinfo_get",
+                "parameters": [
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Cid"
+                        },
+                        "name": "cid",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ticket informations associated with the CPE",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tickets/cpe/{cid}/assetinfo": {
+            "get": {
+                "tags": [
+                    "ticket-info"
+                ],
+                "summary": "Get asset info of CPE",
+                "operationId": "assetinfo_tickets_cpe__cid__assetinfo_get",
+                "parameters": [
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Cid"
+                        },
+                        "name": "cid",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Asset informations associated with the CPE",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "AP": {
+                "title": "AP",
+                "required": [
+                    "mac"
+                ],
+                "type": "object",
+                "properties": {
+                    "mac": {
+                        "title": "MAC Address",
+                        "type": "string"
+                    },
+                    "serial": {
+                        "title": "Serial Number",
+                        "type": "string"
+                    },
+                    "model": {
+                        "title": "Model",
+                        "type": "string"
+                    },
+                    "interfaces": {
+                        "title": "Interfaces",
+                        "type": "object",
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/IfaceAddress"
+                        },
+                        "default": {}
+                    },
+                    "cid": {
+                        "title": "CPE ID",
+                        "type": "string"
+                    },
+                    "fw_version": {
+                        "title": "Firmware version",
+                        "type": "string"
+                    },
+                    "client_script": {
+                        "title": "Client script version",
+                        "type": "string"
+                    },
+                    "name": {
+                        "title": "Device Name",
+                        "type": "string"
+                    },
+                    "zone_name": {
+                        "title": "Zone Name",
+                        "type": "string"
+                    },
+                    "powersave_status": {
+                        "title": "Powersave Status",
+                        "type": "boolean"
+                    },
+                    "uptime": {
+                        "title": "Device uptime",
+                        "type": "number"
+                    },
+                    "last_seen": {
+                        "title": "Last Seen Timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_timestamp": {
+                        "title": "Updated Timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "online_status": {
+                        "title": "Online Status",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/DeviceOnlineStatus"
+                            }
+                        ],
+                        "default": "unknown"
+                    }
+                }
+            },
+            "APIExceptionModel": {
+                "title": "APIExceptionModel",
+                "required": [
+                    "detail"
+                ],
+                "type": "object",
+                "properties": {
+                    "detail": {
+                        "title": "Detail",
+                        "type": "string"
+                    }
+                }
+            },
+            "CPE": {
+                "title": "CPE",
+                "required": [
+                    "mac",
+                    "cid",
+                    "category"
+                ],
+                "type": "object",
+                "properties": {
+                    "mac": {
+                        "title": "MAC Address",
+                        "type": "string"
+                    },
+                    "serial": {
+                        "title": "Serial Number",
+                        "type": "string"
+                    },
+                    "model": {
+                        "title": "Model",
+                        "type": "string"
+                    },
+                    "interfaces": {
+                        "title": "Interfaces",
+                        "type": "object",
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/IfaceAddress"
+                        },
+                        "default": {}
+                    },
+                    "cid": {
+                        "title": "CPE ID",
+                        "type": "string"
+                    },
+                    "category": {
+                        "title": "CPE Category",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/CPECategory"
+                            }
+                        ]
+                    },
+                    "last_seen": {
+                        "title": "Last Seen Timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "uplink_cid": {
+                        "title": "Uplink CPE ID",
+                        "type": "string"
+                    },
+                    "uplink_mac": {
+                        "title": "Uplink MAC Address",
+                        "type": "string"
+                    },
+                    "online_status": {
+                        "title": "Online Status",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/DeviceOnlineStatus"
+                            }
+                        ],
+                        "default": "unknown"
+                    }
+                }
+            },
+            "CPECategory": {
+                "title": "CPECategory",
+                "enum": [
+                    "CPE-M",
+                    "CPE-E",
+                    "CPE-O",
+                    "CPE-W"
+                ],
+                "type": "string",
+                "description": "An enumeration."
+            },
+            "CPEStatus": {
+                "title": "CPEStatus",
+                "type": "object",
+                "properties": {
+                    "indoor_cpe": {
+                        "title": "Indoor CPE",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/CPE"
+                            }
+                        ]
+                    },
+                    "outdoor_cpe": {
+                        "title": "Outdoor CPE",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/CPE"
+                            }
+                        ]
+                    },
+                    "uplink_bssid": {
+                        "title": "Uplink BSSID",
+                        "type": "string"
+                    }
+                }
+            },
+            "CustomerSubscriptionInfo": {
+                "title": "CustomerSubscriptionInfo",
+                "required": [
+                    "customerid"
+                ],
+                "type": "object",
+                "properties": {
+                    "customerid": {
+                        "title": "Customer ID",
+                        "type": "string"
+                    },
+                    "customer_id": {
+                        "title": "Customer Id",
+                        "type": "string",
+                        "default": "na"
+                    },
+                    "cpe_id": {
+                        "title": "Cpe Id",
+                        "type": "string",
+                        "default": "na"
+                    },
+                    "subscription_status": {
+                        "title": "Subscription Status",
+                        "type": "string",
+                        "default": "na"
+                    },
+                    "service_type": {
+                        "title": "Service Type",
+                        "type": "string",
+                        "default": "na"
+                    },
+                    "current_package": {
+                        "title": "Current Package",
+                        "type": "string",
+                        "default": "na"
+                    },
+                    "billing_township": {
+                        "title": "Billing Township",
+                        "type": "string",
+                        "default": "na"
+                    }
+                }
+            },
+            "DeviceOnlineStatus": {
+                "title": "DeviceOnlineStatus",
+                "enum": [
+                    "up",
+                    "down",
+                    "unknown"
+                ],
+                "type": "string",
+                "description": "An enumeration."
+            },
+            "FiberInfo": {
+                "title": "FiberInfo",
+                "required": [
+                    "hostname",
+                    "serial",
+                    "device_mac",
+                    "profile",
+                    "gpon_name",
+                    "profile_id"
+                ],
+                "type": "object",
+                "properties": {
+                    "hostname": {
+                        "title": "Hostname",
+                        "type": "string"
+                    },
+                    "serial": {
+                        "title": "Serial",
+                        "type": "string"
+                    },
+                    "device_mac": {
+                        "title": "Device Mac",
+                        "type": "string"
+                    },
+                    "profile": {
+                        "title": "Profile",
+                        "type": "string"
+                    },
+                    "l1_splitter": {
+                        "title": "L1 Splitter",
+                        "type": "string"
+                    },
+                    "l2_splitter": {
+                        "title": "L2 Splitter",
+                        "type": "string"
+                    },
+                    "otb": {
+                        "title": "Otb",
+                        "type": "string"
+                    },
+                    "olt": {
+                        "$ref": "#/components/schemas/OLTInfo"
+                    },
+                    "gpon_name": {
+                        "title": "Gpon Name",
+                        "type": "string"
+                    },
+                    "profile_id": {
+                        "title": "Profile Id",
+                        "type": "string"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/ONUStatus"
+                    }
+                }
+            },
+            "HTTPValidationError": {
+                "title": "HTTPValidationError",
+                "type": "object",
+                "properties": {
+                    "detail": {
+                        "title": "Detail",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        }
+                    }
+                }
+            },
+            "IfaceAddress": {
+                "title": "IfaceAddress",
+                "type": "object",
+                "properties": {
+                    "ip": {
+                        "title": "IPv4 Address",
+                        "type": "string",
+                        "format": "ipv4"
+                    },
+                    "netmask": {
+                        "title": "IPv4 Netmask",
+                        "type": "string",
+                        "format": "ipv4"
+                    },
+                    "cidr": {
+                        "title": "IPv4 CIDR Address",
+                        "type": "string",
+                        "format": "ipv4interface"
+                    }
+                }
+            },
+            "OLTInfo": {
+                "title": "OLTInfo",
+                "required": [
+                    "mac",
+                    "hostname",
+                    "mgmt_ip",
+                    "operational_status"
+                ],
+                "type": "object",
+                "properties": {
+                    "mac": {
+                        "title": "Mac",
+                        "type": "string"
+                    },
+                    "hostname": {
+                        "title": "Hostname",
+                        "type": "string"
+                    },
+                    "mgmt_ip": {
+                        "title": "Mgmt Ip",
+                        "type": "string"
+                    },
+                    "operational_status": {
+                        "title": "Operational Status",
+                        "type": "string"
+                    },
+                    "status": {
+                        "title": "Status",
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "string"
+                            }
+                        ]
+                    },
+                    "last_seen": {
+                        "title": "Last Seen",
+                        "type": "string"
+                    }
+                }
+            },
+            "ONUStatus": {
+                "title": "ONUStatus",
+                "required": [
+                    "signal",
+                    "phase_state"
+                ],
+                "type": "object",
+                "properties": {
+                    "signal": {
+                        "title": "Signal",
+                        "type": "string"
+                    },
+                    "status": {
+                        "title": "Status",
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "string"
+                            }
+                        ]
+                    },
+                    "phase_state": {
+                        "title": "Phase State",
+                        "type": "string"
+                    },
+                    "last_seen": {
+                        "title": "Last Seen",
+                        "type": "string"
+                    },
+                    "uptime": {
+                        "title": "Uptime",
+                        "type": "string"
+                    }
+                }
+            },
+            "SubscriptionInfo": {
+                "title": "SubscriptionInfo",
+                "required": [
+                    "cid"
+                ],
+                "type": "object",
+                "properties": {
+                    "cid": {
+                        "title": "CPE ID",
+                        "type": "string"
+                    },
+                    "subscribed_plan": {
+                        "title": "Subscribed Plan",
+                        "type": "string",
+                        "default": "na"
+                    },
+                    "installation_type": {
+                        "title": "Installation Type",
+                        "type": "string",
+                        "default": "na"
+                    },
+                    "subscription_status": {
+                        "title": "Subscription Status",
+                        "type": "string",
+                        "default": "na"
+                    }
+                }
+            },
+            "ValidationError": {
+                "title": "ValidationError",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "type": "object",
+                "properties": {
+                    "loc": {
+                        "title": "Location",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "msg": {
+                        "title": "Message",
+                        "type": "string"
+                    },
+                    "type": {
+                        "title": "Error Type",
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "internal-routes",
+            "description": "Endpoints for internal operations such as active healthchecking from control-plane."
+        },
+        {
+            "name": "subscription-info",
+            "description": "Endpoints for retrieving CPE subscription and service information from business systems."
+        },
+        {
+            "name": "cpe-info",
+            "description": "Endpoints for retrieving CPE device information from CPEMS"
+        },
+        {
+            "name": "customer-info",
+            "description": "Endpoints for retrieving CPE ID and subscription plan status from business systems."
+        },
+        {
+            "name": "ap-info",
+            "description": "Endpoints for retrieving Access Point information from OSS API."
+        },
+        {
+            "name": "ticket-info",
+            "description": "Endpoints for retrieving ticket informations and asset informations from Request Tracker(RT)."
+        }
+    ]
+}
